@@ -1,143 +1,58 @@
-# Pomegranate onboarding follow-up — v1
+# Onboarding Follow-Up Playbook
 
-## Purpose
+One rule of thumb behind all of this: match the message to the cause, not the calendar. A confused person and a busy person both go quiet — they need different messages, not just a later timestamp.
 
-`getting-started.md` covers the first session. The demo guide covers everything
-before someone says yes. This covers the gap between them: what to do with a
-person **after** an account exists and **before** they are actually using it.
+## The flow
 
-That gap is where onboarding actually fails. Getting someone to want Pomegranate
-and getting someone to use Pomegranate are different problems, and a link that
-works for the first does nothing for the second.
+| Situation | Wait | Send | If they respond | If still nothing |
+|---|---|---|---|---|
+| Just sent the link | Immediately | "Go for it! I'll check in [specific day] — tag me sooner if you get stuck." (Locks a checkpoint even if they self-start — don't push a live session if they don't want one.) | Move to next row on their check-in day | Send the 48h nudge below |
+| No reply, 24–48h | 48h | "Did the doc make sense, or did it choke on something?" | They're engaged, go to whichever row fits (signed in / stuck / started) | Wait to day 5, send the "do it live" offer |
+| Signed in but did nothing (same day) | Hours, not days | Skip the question — hand them one action: "Next step is just [X], takes 30 sec. Want me to do it with you real quick?" | Walk them through that one step live | Treat as confusion, not priority — repeat with an even smaller single action, don't just re-ping |
+| Started, then stalled 3+ days | 3 days | Reference exactly where they stopped: "Looked like you got through [X] — anything block you on [Y]?" | Fix the specific blocker directly | Move to Silent |
+| No reply anywhere, 10+ days | 10 days | Final, low-pressure: "Totally fine if it's not the moment — I'll leave it here. Shout if it becomes useful later." | If interested, restart at the row that fits; if "not now," mark Revisit-later with their timeframe | Mark Cold, stop outreach |
 
-## The one rule
+## Two calls you make by judgment, not timer
 
-**Activation is content, not login.**
+- Deflection twice in a row ("busy," vague) → ask directly: "Is this just bad timing, or does it not seem useful for what you're doing? Either's fine, just don't want to keep bugging you." → answer decides Cold vs. Revisit-later.
+- Same blank-canvas freeze happening across several people → stop treating it as a follow-up problem. It's a gap in the getting-started flow itself — fix that upstream instead of messaging around it.
 
-Creating an account is not starting. Signing in is not starting. A person has
-started when they have put something of their own into a folder.
+## Ground rules
 
-This matters because the two most common failure states look identical from the
-outside — both are "they haven't got back to me" — but they need opposite
-responses:
+- 3 outbound touches max before someone is Cold or Revisit-later — more reads as pressure.
+- Confusion gets an action, not a question. Priority gets a check-in, not more instructions.
+- Automate the "who's due today" tracking. Keep the actual message and the Cold/Revisit-later call manual — that part needs judgment.
+- Channel updates: email and WhatsApp both feed status; never let an email sync overwrite a manual WhatsApp note — most recent timestamp wins if they conflict.
 
-- Someone who never signed in never received, opened, or understood the
-  instructions. Sending the link again is the right move.
-- Someone who signed in and added nothing **already has the link and it did not
-  help**. Sending it again is the wrong move, and it is the most common mistake.
+---
 
-Before following up with anyone, establish which of these it is. Guessing wastes
-the contact.
+## Applying this automatically
 
-## The five stages
+*Support section. The playbook above is the authority; this only maps the labels
+the tracking produces onto the rows above, so automated reminders can point at
+the right row. It adds no new advice.*
 
-Every person with an account sits in exactly one of these.
+Activation is measured as **content added**, not sign-in — signing in is not
+starting. The automated status labels resolve as follows:
 
-| Stage | Meaning |
-|---|---|
-| **Too early** | Account under 3 days old. Not yet a signal. |
-| **Never started** | Account exists, never signed in. |
-| **Logged in, no content** | Signed in at least once, added nothing. |
-| **Went quiet** | Added something before, silent for 14+ days. |
-| **Active** | Adding content recently. |
+| Automated label | Meaning | Row above |
+|---|---|---|
+| `too_early` | Account under 3 days old | *Just sent the link* — checkpoint only, no nudge yet |
+| `never_started` | Account exists, never signed in | *No reply, 24–48h* → then the day-5 "do it live" offer |
+| `logged_in_no_content` | Signed in, added nothing | *Signed in but did nothing* — hand them one 30-second action, live. Not a re-sent link: they have it and it did not help |
+| `went_quiet` | Added something, silent 14+ days | *Started, then stalled* — reference where they stopped |
+| `active` | Adding content recently | No row. Leave them alone |
 
-Stages are derived from what the product records — sign-ins and content added —
-not from whether the person replied to you. Someone can be warm in conversation
-and completely inactive in the product, and the stage is what tells you so.
+Where a person's situation matches no row, say so rather than improvising one.
 
-## The play for each stage
-
-### Too early
-
-Do nothing. Do not congratulate, do not check in, do not "make sure you got
-set up." Let the account be three days old before you read anything into it.
-
-### Never started
-
-The instructions did not land. Re-send them, on **the channel the person
-actually replies on** — which is usually not email. Keep it to one line and one
-link. If two attempts on their preferred channel produce nothing, stop; this is
-not a follow-up problem, it is a demand problem.
-
-### Logged in, no content — the important one
-
-This is the highest-value stage and the one that needs real effort. They cleared
-every hurdle you built and stalled at the first step that required them to
-supply their own material.
-
-**Do the first capture live with them.** Five minutes, screen-share or call,
-using something real of theirs — not a sample, not a tour of the UI. This is the
-same rule the demo guide already applies before signup:
-
-> Stop. Hand them the keyboard. Don't end on your screen. If they haven't
-> touched it, the demo isn't over.
-
-The rule does not stop applying once they have an account. A person who has
-never put their own material in has not seen the product work; they have seen a
-description of it. Offer a specific time rather than asking whether they would
-like to schedule something.
-
-What not to do here: re-send the getting-started link, send a longer
-explanation, or send a tutorial. All three have already failed for this person
-by definition.
-
-### Went quiet
-
-They got far enough to add something, so the value was at least legible. Ask
-about the specific thing they put in, not about Pomegranate in general. If
-something was promised and never delivered — an extension link, a config file,
-an access email — that unsent item is the likeliest cause. Check what you owe
-them before assuming they lost interest.
-
-### Active
-
-Leave them alone. Do not invent a reason to make contact. If you want something
-from an active user, ask for the thing directly — feedback, a referral, a
-renewal — rather than dressing it as a check-in.
-
-## Cadence
-
-**Proposed, not yet ratified — decide this and replace this section.**
-
-- Day 2: first follow-up, only if the person is *never started*.
-- Day 5: offer a live first capture to anyone *logged in, no content*.
-- Day 10: one more attempt, then stop.
-- Then: no scheduled contact. Re-engage only on a real event — they log in
-  again, they add something, they ask a question, or you have something specific
-  to tell them.
-
-Two constraints that matter more than the exact days:
-
-1. **The trigger is automated; the message is not.** Reminders should arrive
-   without you remembering. The message itself is written by hand every time.
-   Templated follow-ups are what people deflect.
-2. **Act while warm.** Someone who signed in yesterday and stalled is worth more
-   attention than someone dormant for six weeks. Recency of *activity* beats
-   position in a queue.
-
-## When to stop
-
-Stop when: two attempts on their preferred channel have gone unanswered, or the
-person has said no, or they cannot name a problem of their own that this solves.
-
-A person who is friendly but cannot name their own mess is not a slow yes — the
-demo guide already classifies this as nurture, not pursuit. Do not spend
-follow-ups on it. The cost of chasing is not just time; it burns a relationship
-you may want later.
-
-## A note on channels
-
-Do not assume email. Contact with a given person may live on WhatsApp, SMS, or
-somewhere else entirely, and an empty inbox is evidence about **one channel**,
-not about the relationship. Never conclude "they did not respond" from a source
-that only sees email — say "no reply on this channel since <date>" and check the
-others before acting.
+A note on evidence: an empty inbox is evidence about **one channel**, not about
+the relationship. Never conclude "they did not respond" from a source that only
+sees email — say "no reply on this channel since &lt;date&gt;" and check the others
+before acting.
 
 ## Related
 
 - [Getting-started onboarding guide](getting-started.md) — the first session.
-- [Conversation-history use-case playbook](onboarding.md) — finding a first
-  folder worth creating from what someone already has.
+- [Conversation-history use-case playbook](onboarding.md) — finding a first folder worth creating.
 - [Live demo guide](demo-guide.md) — everything before the account exists.
-- [Setup links and interface guide](setup-links.md) — what to send when the
-  blocker is a missing connection.
+- [Setup links and interface guide](setup-links.md) — what to send when the blocker is a missing connection.
