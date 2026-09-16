@@ -1,4 +1,7 @@
-Walks a brand-new Pomegranate user through first-time setup — intro to what Pomegranate does, choosing how they want to feed it data (Claude/ChatGPT/Deepseek, Chrome extension, Slack bot, WhatsApp bot, or Pomegranate web), connecting the right tools/credentials, recommending concrete use cases from their own context, and importing a first batch of real data. Use this skill whenever a user is new to Pomegranate and asks to get started, get set up, be onboarded, connect their data, or "what can I do with this" — even if they don't say the word "onboarding." Also trigger on a short structured prompt containing "Email:", "Phone:", and/or "MCP link:" fields — that's the standard Pomegranate getting-started prompt and it means the user wants this flow. Also use it if an existing user wants to add a brand-new interface (e.g. "can I also hook up Slack?") — in that case jump straight to step 2 for the new interface, no need to repeat the intro. Also use it when a user asks how Pomegranate itself works — folders vs subfolders, routing, templates, who can see what, which AI model is used, where their data is stored, or how to delete something — and answer from the FAQ (see "Answering questions along the way").
+---
+name: pomegranate-getting-started
+description: Onboard a new Pomegranate user — introduce Pomegranate, pick how they feed it data (Claude/ChatGPT connector, Chrome extension, Slack bot, WhatsApp bot, or the web app), get each one connected, recommend concrete folders from their real context, and import a first batch of data. Use when a user is new and wants to get started, set up, onboarded, or connect their data; when a message carries "Email:", "Phone:", and/or "MCP link:" fields; when an existing user wants to add an interface; or when someone asks how Pomegranate works (answer from the FAQ).
+---
 
 # Pomegranate Onboarding
 
@@ -19,7 +22,7 @@ MCP link: https://app.pomegranate.expert/mcp/connector/<their-id>
 
 - Email is effectively always present — it's how the user is identified and it's the return address for every setup email in stage 3.
 - Phone is optional. It's only needed if the user wants the WhatsApp interface; if it's missing you'll pick that up in stage 3 rather than blocking on it here.
-- MCP link is optional too, but present it if the user already has a Pomegranate connector URL — it's what makes the Claude/ChatGPT/Deepseek path in stage 3 a one-step "paste this in" instead of a search.
+- MCP link is optional too, but present it if the user already has a Pomegranate connector URL — it's what makes the Claude/ChatGPT path in stage 3 a one-step "paste this in" instead of a search.
 
 Pull these three fields out of the triggering message as soon as you see them and hold onto them — the point of asking for them up front is so you never have to re-ask for something the user already gave you. If a field is missing and stage 3 needs it, ask for it there, in context, rather than sending the user back to redo the whole prompt. Treat these values as credentials, not conversation topics: don't repeat the phone number or MCP link back at length, don't paste them into unrelated tool calls, and don't log or echo them more than needed to act on them.
 
@@ -37,9 +40,9 @@ Don't pile on more explanation here — let this land, then move to stage 2.
 
 ## Stage 2 — Choose an interface
 
-Ask how they want to get data into Pomegranate. Since people commonly want more than one, use a multi-select prompt (ask_user_input_v0, type: multi_select) with these options and blurbs:
+Ask how they want to get data into Pomegranate. Since people commonly want more than one, offer these as a multi-select. If your environment has a tool for asking the user a multiple-choice question, use it; otherwise list the options numbered and let them reply with the numbers. Options and blurbs:
 
-- Claude / ChatGPT / Deepseek — add files, conversations, or ideas directly and ask about anything you need
+- Claude / ChatGPT — add files, conversations, or ideas directly and ask about anything you need
 - Chrome extension — capture any page, email, or conversation as you browse
 - Slack bot — pull in channels and conversations your team already has
 - WhatsApp bot — forward messages from your team
@@ -51,12 +54,18 @@ Record every option they pick — stage 3 walks through each one they chose, in 
 
 For each interface the user selected, check what's already available and close the gap. The goal is a working connection by the end of this stage, not just an explanation of one. Several of these paths end in an email to Pomegranate's team rather than a self-serve toggle — that's expected, not a failure state, since a few surfaces are provisioned by hand on Pomegranate's side. See "Sending a setup email" below before sending any of them.
 
-### Claude / ChatGPT / Deepseek
+### Claude / ChatGPT
 
-The MCP link from the getting-started prompt is the credential for all three.
+The MCP link from the getting-started prompt is the credential for both.
 
-- Claude: check whether a Pomegranate MCP connector is already active in this session (look for mcp__POMEGRANATE__* tools). If it's there, confirm it and move on. If not, and you have their MCP link, tell them to add it as a custom connector: Settings → Connectors → Add custom connector → paste the link. If they didn't give you a link, ask for it or fall back to search_mcp_registry → suggest_connectors.
-- ChatGPT / Deepseek: you can't connect these platforms on the user's behalf. Give them the one-line version — add the same MCP link as a custom connector/plugin in that platform's settings — without trying to walk through UI you can't see and might get wrong.
+**First, check whether Pomegranate is already connected in this conversation.** Don't look for a particular tool-name prefix — the prefix depends on what the user named the connector, so it varies. Instead, look for tools that do what Pomegranate's tools do, whatever their prefix: `list_folders`, `ingest_document`, `query_context`, `get_context`. If you find them, call `list_folders` once as a probe. A successful result means the connection works: say so and move on. If it errors (for example, invalid token), treat the connector as broken and have the user re-add it with the link below.
+
+**If the tools aren't there:**
+
+- **Claude:** if you have their MCP link, tell them to add it: Settings → Connectors → Add custom connector → paste the link (no auth fields to fill in). If they didn't give you a link, ask for it. Pomegranate connector links are issued per person, so don't search a public connector directory for one.
+- **ChatGPT:** you can't connect it on the user's behalf. Give them the one-line version: add the same MCP link as a custom connector in ChatGPT's settings. Custom connectors need a ChatGPT plan with developer-mode / custom-connector support, so if they can't find the option, that's the likely reason. Don't walk them through UI you can't see.
+
+**Adding a connector doesn't give you its tools in this conversation right away.** After they add it, the connector usually has to be switched on for the current chat, from the chat's tools/connectors menu. Tell them that, then run the check above again on their next message. If the tools still aren't there, tell them plainly to **open a new conversation and paste the same getting-started prompt again**. Then, in that new conversation, if the check passes, say the connector is live and continue from where they left off rather than repeating stages 1–2 (ask which interfaces they'd picked, if they didn't say). Don't continue into stages 4–5 as if you could write to Pomegranate when you can't: without the tools, all you can do is produce drafts, and the user will think onboarding failed.
 
 ### WhatsApp bot
 
@@ -90,9 +99,17 @@ If the user doesn't have all of this yet, send what they do have and note the re
 
 ### Sending a setup email
 
-Several of the above route through the same pattern: draft the email, show the user the exact text (recipient, subject, body) before anything goes out, and send only on explicit approval — this is an action taken on the user's behalf, not a lookup, and it's carrying account-identifying details, so don't send it silently or send more than they approved. Use whatever email tool is connected (e.g. Gmail).
+Several of the above route through the same pattern: draft the email, show the user the exact text (recipient, subject, body) before anything goes out, and send only on explicit approval — this is an action taken on the user's behalf, not a lookup, and it's carrying account-identifying details, so don't send it silently or send more than they approved.
 
-Don't move to stage 4 with an interface still fully unresolved — better to note "we've sent the Slack request, we'll hear back" and continue than to stall the whole flow on one pending setup.
+How it goes out depends on what this environment actually has:
+
+- **An email tool that can send** (e.g. a connected Gmail with a send action): send it from there after approval, and confirm only once the tool result shows it was sent.
+- **An email tool that can only create drafts:** create the draft, tell the user it's waiting in their drafts folder, and ask them to hit send. It isn't sent until they do.
+- **No email tool at all (the common case for a new user):** don't stall and don't pretend. Give them the email as a ready-to-copy block (To, Subject, Body) plus a `mailto:bilel@pomegranate.expert?subject=…` link with the subject URL-encoded, and ask them to send it from the email address on their Pomegranate account, since that's how the request gets matched to their account. Then ask them to confirm once it's sent.
+
+Never say a request "has been sent" unless a tool result confirms it or the user tells you they sent it. Otherwise say it's drafted and waiting on them.
+
+Don't move to stage 4 with an interface still fully unresolved — better to note "the Slack request is sent (or drafted for you to send), we'll hear back" and continue than to stall the whole flow on one pending setup.
 
 ## Stage 4 — Recommend concrete use cases
 

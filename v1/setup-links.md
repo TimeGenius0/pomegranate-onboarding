@@ -13,7 +13,7 @@ Install the extension from the Chrome Web Store, then use the connection page to
 ## Other interfaces
 
 - **Claude.ai:** add the user's capability connector URL under Settings → Connectors → Add custom connector.
-- **ChatGPT / Deepseek:** add the same MCP connector URL as a custom connector or plugin in that platform's settings.
+- **ChatGPT:** add the same MCP connector URL as a custom connector in ChatGPT's settings (this needs a plan with custom-connector / developer-mode support).
 - **Slack:** requires a Slack administrator to install and approve permissions; use the Pomegranate team setup process.
 - **WhatsApp:** use the registered Pomegranate agent number supplied during setup.
 - **Pomegranate web:** sign in at the dashboard and add files, documents, or text directly.
