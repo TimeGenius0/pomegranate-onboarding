@@ -1,6 +1,6 @@
 ---
 name: pomegranate-getting-started
-description: Onboard a new Pomegranate user — introduce Pomegranate, pick how they feed it data (Claude/ChatGPT connector, Chrome extension, Slack bot, WhatsApp bot, or the web app), get each one connected, recommend concrete folders from their real context, and import a first batch of data. Use when a user is new and wants to get started, set up, onboarded, or connect their data; when a message carries "Email:", "Phone:", and/or "MCP link:" fields; when an existing user wants to add an interface; or when someone asks how Pomegranate works (answer from the FAQ).
+description: Pomegranate's setup guide for new users — introduce Pomegranate, help them choose how to add data (Claude/ChatGPT connector, Chrome extension, Slack bot, WhatsApp bot, or the web app), get each one connected, suggest a few useful folders based on their work, and import a first batch of data with their approval. Useful when a user asks for help getting started with Pomegranate, wants to add another way of sending it data, or asks how Pomegranate works.
 ---
 
 # Pomegranate Onboarding
@@ -9,24 +9,23 @@ This skill runs a first-time user through five stages: introduce Pomegranate, pi
 
 Move through the stages in order, but stay conversational — this should feel like a guided setup, not a form.
 
-## The getting-started prompt
+## How users usually start
 
-Users kick this off with a short prompt carrying their credentials, not a blank "help me get started." Expect something like:
+This guide is written for the AI assistant helping a new Pomegranate user, and it describes a setup the user asked for. Every step that acts on their behalf (reading past conversations, sending an email, creating a folder, importing data) is something you offer and they approve. Nothing here should happen without their say-so.
+
+Their access email asks them to connect Pomegranate to Claude or ChatGPT first, then open a new conversation and ask for help getting set up, with something like:
 
 ```text
-Start my Pomegranate onboarding.
-Email: jane@acme.com
-Phone: +1 555 010 1234
-MCP link: https://app.pomegranate.expert/mcp/connector/<their-id>
+Hi! I've just signed up for Pomegranate and connected its connector. Could you help me set it up? Pomegranate's setup guide is at https://pomegranate.expert/onboarding/v1/getting-started.md — please use it as a reference while you walk me through it.
+My account email is jane@acme.com.
+My WhatsApp number is +1 555 010 1234.
 ```
 
-- Email is effectively always present — it's how the user is identified and it's the return address for every setup email in stage 3.
-- Phone is optional. It's only needed if the user wants the WhatsApp interface; if it's missing you'll pick that up in stage 3 rather than blocking on it here.
-- MCP link is optional too, but present it if the user already has a Pomegranate connector URL — it's what makes the Claude/ChatGPT path in stage 3 a one-step "paste this in" instead of a search.
+- **Email** identifies their account, and it's the address setup requests in stage 3 are sent from.
+- **Phone** is optional. It only matters for the WhatsApp interface. If it's missing and they choose WhatsApp, ask for it then.
+- **The connector link is intentionally not in the message.** They add it in their assistant's settings from their access email, so it never needs to appear in the chat. If they paste it anyway, use it only to help them add the connector, and don't repeat it back.
 
-Pull these three fields out of the triggering message as soon as you see them and hold onto them — the point of asking for them up front is so you never have to re-ask for something the user already gave you. If a field is missing and stage 3 needs it, ask for it there, in context, rather than sending the user back to redo the whole prompt. Treat these values as credentials, not conversation topics: don't repeat the phone number or MCP link back at length, don't paste them into unrelated tool calls, and don't log or echo them more than needed to act on them.
-
-If someone starts the flow with a plain "help me get started" and no fields, that's fine too — just ask for email (and phone/MCP link if relevant once you reach stage 3) conversationally instead of assuming the structured format.
+Keep whatever details they gave you so you don't have to ask twice. If they just say "help me get started with Pomegranate" without details, that's fine: ask for anything you need when a stage needs it.
 
 ## Stage 1 — Introduce Pomegranate
 
@@ -56,20 +55,20 @@ For each interface the user selected, check what's already available and close t
 
 ### Claude / ChatGPT
 
-The MCP link from the getting-started prompt is the credential for both.
+Both connect with the personal connector link from the user's Pomegranate access email.
 
-**First, check whether Pomegranate is already connected in this conversation.** Don't look for a particular tool-name prefix — the prefix depends on what the user named the connector, so it varies. Instead, look for tools that do what Pomegranate's tools do, whatever their prefix: `list_folders`, `ingest_document`, `query_context`, `get_context`. If you find them, call `list_folders` once as a probe. A successful result means the connection works: say so and move on. If it errors (for example, invalid token), treat the connector as broken and have the user re-add it with the link below.
+**First, check whether Pomegranate is already connected in this conversation.** Don't look for a particular tool-name prefix — the prefix depends on what the user named the connector, so it varies. Instead, look for tools that do what Pomegranate's tools do, whatever their prefix: `list_folders`, `ingest_document`, `query_context`, `get_context`. If you find them, call `list_folders` once as a probe. A successful result means the connection works: say so and move on. If it errors (for example, invalid token), treat the connector as broken and have the user remove it and add it again with the link from their access email.
 
 **If the tools aren't there:**
 
-- **Claude:** if you have their MCP link, tell them to add it: Settings → Connectors → Add custom connector → paste the link (no auth fields to fill in). If they didn't give you a link, ask for it. Pomegranate connector links are issued per person, so don't search a public connector directory for one.
-- **ChatGPT:** you can't connect it on the user's behalf. Give them the one-line version: add the same MCP link as a custom connector in ChatGPT's settings. Custom connectors need a ChatGPT plan with developer-mode / custom-connector support, so if they can't find the option, that's the likely reason. Don't walk them through UI you can't see.
+- **Claude:** ask them to add the connector link from their Pomegranate access email: Settings → Connectors → Add custom connector → paste the link (no auth fields to fill in). If they can't find the email, the Pomegranate team can resend it (see "Sending a setup email"). Each person's link is unique, so don't look for one in a public connector directory.
+- **ChatGPT:** you can't connect it on their behalf. Give them the one-line version: add the same link from their access email as a custom connector in ChatGPT's settings. Custom connectors need a ChatGPT plan with developer-mode / custom-connector support, so if they can't find the option, that's the likely reason. Don't walk them through UI you can't see.
 
-**Adding a connector doesn't give you its tools in this conversation right away.** After they add it, the connector usually has to be switched on for the current chat, from the chat's tools/connectors menu. Tell them that, then run the check above again on their next message. If the tools still aren't there, tell them plainly to **open a new conversation and paste the same getting-started prompt again**. Then, in that new conversation, if the check passes, say the connector is live and continue from where they left off rather than repeating stages 1–2 (ask which interfaces they'd picked, if they didn't say). Don't continue into stages 4–5 as if you could write to Pomegranate when you can't: without the tools, all you can do is produce drafts, and the user will think onboarding failed.
+**Adding a connector doesn't give you its tools in this conversation right away.** After they add it, the connector usually has to be switched on for the current chat, from the chat's tools/connectors menu. Tell them that, then run the check above again on their next message. If the tools still aren't there, tell them plainly to **open a new conversation and ask for setup help again, the same way they did in this one**. Then, in that new conversation, if the check passes, say the connector is live and continue from where they left off rather than repeating stages 1–2 (ask which interfaces they'd picked, if they didn't say). Don't continue into stages 4–5 as if you could write to Pomegranate when you can't: without the tools, all you can do is produce drafts, and the user will think onboarding failed.
 
 ### WhatsApp bot
 
-If a phone number came with the getting-started prompt: walk them through it directly —
+If they gave you their WhatsApp number: walk them through it directly —
 
 - Have them pick a name for their agent.
 - Have them save +1 510 697 6636 in their WhatsApp contacts under that name.
@@ -83,7 +82,7 @@ The extension is unlisted — this link only works for accounts Pomegranate has 
 
 ### Pomegranate web
 
-No provisioning needed here — just point them to the web app and have them log in with the email from the getting-started prompt. If they don't have an account yet, that's the one thing to resolve.
+No provisioning needed here — just point them to the web app and have them log in with their account email. If they don't have an account yet, that's the one thing to resolve.
 
 ### Slack bot
 
@@ -115,7 +114,7 @@ Don't move to stage 4 with an interface still fully unresolved — better to not
 
 Generic "here's what you could do" pitches don't land. Ground the recommendations in the user's actual context using the current onboarding methodology:
 
-1. Fetch https://timegenius0.github.io/pomegranate-onboarding/v1/onboarding.md with web_fetch — this is Pomegranate's living use-case-identification playbook, and it's versioned, so pull it fresh rather than relying on a stale copy.
+1. Fetch https://pomegranate.expert/onboarding/v1/onboarding.md with your web-fetch tool — this is Pomegranate's living use-case-identification playbook, and it's versioned, so pull it fresh rather than relying on a stale copy.
 2. Follow it as written. In short, it has you: get explicit consent before reviewing any conversation history, be honest about what history you actually have access to, look for real ongoing work (product/feature decisions, content and drafts, or other recurring work) rather than one-off questions, and come back with 1–3 concrete folder recommendations — each naming what you noticed, a proposed folder and what it would hold, and how it'd help future work. It also has you keep this step read-only: recommending is not the same as importing, and importing needs its own separate approval, which is what stage 5 is for.
 3. If the fetch fails or the user has no reviewable history (brand-new account, nothing shared yet), fall back to asking directly: "what's a project or workflow you're always having to re-explain to an AI assistant?" and build 1-3 recommendations from their answer instead.
 
@@ -137,7 +136,7 @@ subfolder?", "who can see this?", "what happens to the file after I upload it?",
 reading my data?", "how do I delete something?". Don't improvise these, and don't stall the
 onboarding to go read the source.
 
-**Fetch https://timegenius0.github.io/pomegranate-onboarding/v1/faq.md with web_fetch and answer
+**Fetch https://pomegranate.expert/onboarding/v1/faq.md with your web-fetch tool and answer
 from it.** Like onboarding.md, it's versioned and kept current against the live product, so pull it
 fresh rather than relying on a stale copy or on what you remember.
 
