@@ -3,11 +3,12 @@
 ## Core links
 
 - **Dashboard:** https://app.pomegranate.expert/
-- **Chrome extension connection:** https://app.pomegranate.expert/?returnTo=connect
+- **Chrome extension (Chrome Web Store):** https://chromewebstore.google.com/detail/njkhjadbdlbadhkhjfhpgdiikjkonmek?utm_source=item-share-cb
+- **Chrome extension connection page:** https://app.pomegranate.expert/?returnTo=connect
 - **MCP server for developer clients:** https://app.pomegranate.expert/mcp/server
 - **Public onboarding index:** https://timegenius0.github.io/pomegranate-onboarding/
 
-The Chrome extension is an invited, unlisted alpha. Pomegranate must enroll an account before installation works; the connection page is the supported path for issuing a token and connecting it. Do not represent the connection page as a public install link.
+Install the extension from the Chrome Web Store, then use the connection page to sign in and issue a token. Keep personal connection tokens private.
 
 ## Other interfaces
 
