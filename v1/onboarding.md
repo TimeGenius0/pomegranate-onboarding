@@ -1,5 +1,7 @@
 # Pomegranate onboarding — v1
 
+> The getting-started guide (getting-started.md) now includes this playbook as its Stage 4, so it no longer fetches this file. This file stays for the standalone onboarding skill (skill/SKILL.md). Keep the two in sync.
+
 ## Purpose
 
 Help users identify useful context from their past AI-assistant conversations (Claude, ChatGPT, or whichever assistant is running this) that could become persistent Pomegranate folders. Look for ongoing work where future conversations benefit from decisions, drafts, preferences, or specs already established.
